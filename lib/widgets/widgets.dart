@@ -45,53 +45,54 @@ Widget seachBar(BuildContext context) {
   );
 }
 
-Widget categories(bool showMore) {
-  return Container(
-    color: Colors.red,
-    height: 300,
-    child: GridView.builder(
-        itemCount: showMore ? 20 : 8,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4, mainAxisSpacing: 5, crossAxisSpacing: 5),
-        itemBuilder: (context, index) {
-          return Container(
-            // height: 00,
-            color: Colors.yellow,
-            child: Column(
-              children: [
-                Card(
-                  child: Container(
-                    height: 60,
-                    color: Colors.grey,
-                  ),
-                ),
-                const Text('....')
-              ],
-            ),
-          );
-        }),
-  );
-}
-
 Widget topPicks(BuildContext context) {
   List<String> images = ['assets/images/fruitsplashimage.png'];
   return CarouselSlider.builder(
     itemCount: images.length,
     itemBuilder: (context, index, realIndex) {
       final imageUrl = images[index];
-      return buildImage(imageUrl, index);
+      return buildImage(
+        color: Colors.green,
+        text: 'DISCOUNT\n25% ALL\nFRUITS',
+        image: imageUrl,
+        index: index,
+        button: true,
+      );
     },
     options: CarouselOptions(height: 180, viewportFraction: 1),
   );
 }
 
-Widget buildImage(String image, int index) {
+Widget crazeDeals(BuildContext context) {
+  List<String> images = ['assets/images/veg-task.png'];
+  return CarouselSlider.builder(
+    itemCount: images.length,
+    itemBuilder: (context, index, realIndex) {
+      final imageUrl = images[index];
+      return buildImage(
+        color: Colors.black,
+        text: 'Customer favorate \nTop supermarket',
+        image: imageUrl,
+        index: index,
+        button: false,
+      );
+    },
+    options: CarouselOptions(height: 180, viewportFraction: 1),
+  );
+}
+
+Widget buildImage(
+    {required String image,
+    required int index,
+    required Color color,
+    required String text,
+    required bool button}) {
   return Container(
     width: double.infinity,
     margin: const EdgeInsets.all(1),
     padding: const EdgeInsets.symmetric(horizontal: 16),
     decoration: BoxDecoration(
-      color: Colors.green[600], // Green background
+      color: color, // Green background
       borderRadius: BorderRadius.circular(12), // Rounded corners
     ),
     child: Row(
@@ -101,29 +102,48 @@ Widget buildImage(String image, int index) {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'DISCOUNT\n25% ALL\nFRUITS',
-                style: TextStyle(
+              Text(
+                text,
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  ),
-                  child: const Text(
-                    'Check Now',
-                    style: TextStyle(color: Colors.white),
-                  )),
+              button
+                  ? ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.orange,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                      ),
+                      child: const Text(
+                        'Check Now',
+                        style: TextStyle(color: Colors.white),
+                      ))
+                  : TextButton(
+                      onPressed: () {},
+                      child: const Row(
+                        children: [
+                          Text(
+                            'Explore',
+                            style:
+                                TextStyle(color: Colors.orange, fontSize: 20),
+                          ),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Colors.orange,
+                          )
+                        ],
+                      ))
             ],
           ),
         ),
@@ -136,18 +156,6 @@ Widget buildImage(String image, int index) {
             ))
       ],
     ),
-  );
-}
-
-Widget crazeDeals(BuildContext context) {
-  List<String> images = ['assets/images/veg-task.png'];
-  return CarouselSlider.builder(
-    itemCount: images.length,
-    itemBuilder: (context, index, realIndex) {
-      final imageUrl = images[index];
-      return buildImage(imageUrl, index);
-    },
-    options: CarouselOptions(height: 180, viewportFraction: 1),
   );
 }
 
@@ -250,7 +258,10 @@ Widget nearby() {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Freshly baker'),
+                  const Text(
+                    'Freshly baker',
+                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.w500),
+                  ),
                   const Text('Sweets, North Indian'),
                   const Text('Site No |6.4 km'),
                   Container(
@@ -283,31 +294,112 @@ Widget nearby() {
             ),
           ],
         ),
-        const Column(
+      ],
+    ),
+  );
+}
+
+Widget divider() {
+  return const Column(
+    crossAxisAlignment: CrossAxisAlignment.end,
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      Divider(
+        thickness: 1,
+        color: Colors.black,
+        indent: 90, // Add spacing on the left side
+        endIndent: 10, // Add spacing on the right side
+      ),
+      Padding(
+        padding: EdgeInsets.only(left: 90),
+        child: Row(
           children: [
-            Divider(
-              endIndent: 10,
+            CircleAvatar(
+              radius: 10,
+              backgroundColor: Colors.red,
+              child: Icon(
+                size: 15,
+                Icons.percent_sharp,
+                color: Colors.white,
+              ),
             ),
-            Row(
-              children: [
-                CircleAvatar(
-                  radius: 15,
-                  backgroundColor: Colors.red,
-                  child: Icon(
-                    Icons.percent_sharp,
-                    color: Colors.white,
-                  ),
-                ),
-                Text('Upto 10% off '),
-                Icon(
-                  Icons.verified,
-                  size: 35,
-                ),
-                Text('3400+ items availble')
-              ],
+            SizedBox(
+              width: 10,
+            ),
+            Text(
+              'Upto 10% off ',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Icon(
+              Icons.verified,
+              size: 20,
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Text(
+              '3400+ items availble',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700),
             )
           ],
         ),
+      )
+    ],
+  );
+}
+
+Widget refer() {
+  return Container(
+    decoration: BoxDecoration(
+        color: const Color(0xFF29D177),
+        borderRadius: BorderRadius.circular(10)),
+    width: double.infinity,
+    height: 150,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        const SizedBox(
+            // width: 230,
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Refer & Earn',
+              style: TextStyle(
+                fontFamily: 'Quicksand', // Font family
+                color: Colors.white,
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                height: 17.5 / 14,
+              ),
+            ),
+            SizedBox(height: 10,),
+            Row(
+              children: [
+                Text(
+                  'Invite your friends & earn 15% off',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                    height: 17.5 / 14,
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_circle_right,
+                  color: Colors.white,
+                )
+              ],
+            )
+          ],
+        )),
+        Image.asset(
+          'assets/images/refer.png',
+        )
       ],
     ),
   );

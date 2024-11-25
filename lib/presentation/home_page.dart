@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:task_1/widgets/catogories.dart';
 import 'package:task_1/widgets/widgets.dart';
 
 class HomePage extends StatelessWidget {
@@ -18,7 +19,7 @@ class HomePage extends StatelessWidget {
       const SizedBox(
         height: 10,
       ),
-      // categories(false),
+      CategoryGrid(),
       const SizedBox(
         height: 10,
       ),
@@ -42,17 +43,25 @@ class HomePage extends StatelessWidget {
       const Text('Craze Deals ', style: TextStyle(fontSize: 25)),
       crazeDeals(context),
       const SizedBox(
-        height: 10,
+        height: 50,
+      ),
+      refer(),
+       const SizedBox(
+        height: 40,
       ),
       const Text('Nearby stores ', style: TextStyle(fontSize: 25)),
       const SizedBox(
         height: 20,
       ),
+      
+
       nearby(),
+      divider(),
       const SizedBox(
         height: 20,
       ),
       nearby(),
+      divider(),
     ];
     return Scaffold(
       appBar: AppBar(

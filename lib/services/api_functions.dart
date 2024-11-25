@@ -47,19 +47,20 @@ class ApiFunctions extends GetxController {
     }
   }
 
-    String getFormattedTimestamp(String timestamp) {
-    
+  String getFormattedTimestamp(String timestamp) {
     try {
-      final dateTime = DateTime.parse(timestamp); // Parse the ISO-8601 timestamp
-      return DateFormat('dd/MM/yyyy').format(dateTime); // Format as '11/12/2024'
+      final dateTime =
+          DateTime.parse(timestamp); // Parse the ISO-8601 timestamp
+      return DateFormat('dd/MM/yyyy')
+          .format(dateTime); // Format as '11/12/2024'
     } catch (e) {
       return timestamp; // Return original if parsing fails
     }
   }
-   // Method to get the full image URL
- String getFullImageUrl(String image) {
-  // const baseUrl = "https://raw.githubusercontent.com/shabeersha/test-api/main/"; 
-  return '$apiUrl$image'; // Combine base URL with the image file name
-}
 
+  // Method to get the full image URL
+  String getFullImageUrl(String image) {
+    // const baseUrl = "https://raw.githubusercontent.com/shabeersha/test-api/main/";
+    return '$apiUrl$image'; // Combine base URL with the image file name
+  }
 }

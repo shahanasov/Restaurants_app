@@ -7,7 +7,7 @@ class NotificationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ApiFunctions controller = Get.put(ApiFunctions());
+
      
     return Scaffold(
       appBar: AppBar(
@@ -24,7 +24,13 @@ class NotificationPage extends StatelessWidget {
           },
         ),
       ),
-      body: Obx(() {
+      body: notification()
+    );
+  }
+}
+Widget notification(){
+      final ApiFunctions controller = Get.put(ApiFunctions());
+  return Obx(() {
         if (controller.isLoading.value || controller.notifications.isEmpty) {
           return Center(
             child: CircularProgressIndicator(
@@ -59,7 +65,5 @@ class NotificationPage extends StatelessWidget {
           },
           itemCount: controller.notifications.length,
         );
-      }),
-    );
-  }
+      });
 }
