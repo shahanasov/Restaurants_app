@@ -1,11 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:task_1/presentation/notification_page.dart';
 import 'package:task_1/services/api_functions.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-Widget seachBar(BuildContext context) {
-  final ApiFunctions controller = Get.put(ApiFunctions());
+Widget searchBar(BuildContext context, WidgetRef ref) {
   return Row(
     children: [
       Expanded(
@@ -13,37 +12,46 @@ Widget seachBar(BuildContext context) {
           borderRadius: BorderRadius.circular(10),
           child: const TextField(
             decoration: InputDecoration(
-                contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                filled: true,
-                border: InputBorder.none,
-                hintText: 'Search for products/ stores',
-                suffixIcon: Icon(
-                  Icons.search_rounded,
-                  color: Colors.green,
-                )),
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              filled: true,
+              border: InputBorder.none,
+              hintText: 'Search for products/stores',
+              suffixIcon: Icon(
+                Icons.search_rounded,
+                color: Colors.green,
+              ),
+            ),
           ),
         ),
       ),
       IconButton(
-          onPressed: () {
-            controller.fetchNotifications();
-            Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const NotificationPage()));
-          },
-          icon: const Icon(
-            Icons.notifications_none,
-            color: Colors.red,
-          )),
+        onPressed: () {
+          final notifier = ref.read(notificationProvider.notifier);
+          // Fetch notifications directly
+          notifier.fetchNotifications();
+          
+          // Navigate to notification page
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => const NotificationPage(),
+          ));
+        },
+        icon: const Icon(
+          Icons.notifications_none,
+          color: Colors.red,
+        ),
+      ),
       IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.local_offer_outlined,
-            color: Colors.orange,
-          ))
+        onPressed: () {},
+        icon: const Icon(
+          Icons.local_offer_outlined,
+          color: Colors.orange,
+        ),
+      ),
     ],
   );
 }
+
 
 Widget topPicks(BuildContext context) {
   List<String> images = ['assets/images/fruitsplashimage.png'];

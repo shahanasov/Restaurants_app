@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:task_1/services/api_functions.dart';
 
-class NotificationPage extends StatelessWidget {
+class NotificationPage extends ConsumerWidget {
   const NotificationPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(notificationProvider.notifier);
+    final state = ref.watch(notificationProvider);
 
-     
+  
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Notifications'),
@@ -24,46 +27,48 @@ class NotificationPage extends StatelessWidget {
           },
         ),
       ),
-      body: notification()
+      body: Builder(
+        builder: (context) {
+          if (state.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(
+                color: Colors.green[400],
+              ),
+            );
+          } else if (state.notifications.isEmpty) {
+            return const Center(
+              child: Text('No notifications available.'),
+            );
+          } else {
+            return ListView.separated(
+              separatorBuilder: (context, index) => const Divider(
+                thickness: 1,
+              ),
+              itemBuilder: (context, index) {
+                final notification = state.notifications[index];
+                final time =
+                    notifier.getFormattedTimestamp(notification.timeStamp);
+                return ListTile(
+                  leading: const CircleAvatar(
+                    backgroundColor: Colors.white,
+                  ),
+                  title: Text(notification.title),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(notification.body),
+                      const SizedBox(height: 10,),
+                      Text(time),
+                    ],
+                  ),
+                  isThreeLine: true,
+                );
+              },
+              itemCount: state.notifications.length,
+            );
+          }
+        },
+      ),
     );
   }
-}
-Widget notification(){
-      final ApiFunctions controller = Get.put(ApiFunctions());
-  return Obx(() {
-        if (controller.isLoading.value || controller.notifications.isEmpty) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: Colors.green[400],
-            ),
-          );
-        }
-
-        return ListView.separated(
-          separatorBuilder: (context, index) => const Divider(
-            thickness: 1,
-          ),
-          itemBuilder: (context, index) {
-            final notification = controller.notifications[index];
-            String time=controller. getFormattedTimestamp(notification.timeStamp);
-            String image=controller. getFullImageUrl(notification.image);
-            return ListTile(
-              leading:  CircleAvatar(
-                backgroundImage: NetworkImage(image),
-                backgroundColor: Colors.white,
-              ),
-              title: Text(notification.title),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(notification.body),
-                  Text(time)
-                ],
-              ),
-              isThreeLine: true,
-            );
-          },
-          itemCount: controller.notifications.length,
-        );
-      });
 }

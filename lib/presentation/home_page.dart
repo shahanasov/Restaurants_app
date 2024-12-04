@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:task_1/widgets/catogories.dart';
 import 'package:task_1/widgets/widgets.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget{
   const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     List<Widget> widgetList = [
-      seachBar(context),
+      searchBar(context, ref),
       const SizedBox(
         height: 10,
       ),

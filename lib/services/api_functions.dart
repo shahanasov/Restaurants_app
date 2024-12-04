@@ -1,66 +1,96 @@
 import 'dart:convert';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:task_1/services/model.dart';
 import 'package:http/http.dart' as http;
+import 'package:task_1/services/model.dart';
 
-class ApiFunctions extends GetxController {
+class ApiFunctions extends StateNotifier<NotificationState> {
+  ApiFunctions() : super(NotificationState.initial());
+
   static const String apiUrl =
       "https://raw.githubusercontent.com/shabeersha/test-api/main/test-notifications.json";
 
-  // Reactive list to store notifications
-  var notifications = <NotificationModel>[].obs;
+  // Fetch notifications from the API
+Future<void> fetchNotifications() async {
+  state = state.copyWith(isLoading: true); // Start loading
+  try {
+    final response = await http.get(Uri.parse(apiUrl));
+    // Log the response body for debugging
+    // print('Response: ${response.body}'); 
 
-  // Reactive loading state
-  var isLoading = false.obs;
+    if (response.statusCode == 200) {
+      final decoded = json.decode(response.body) as Map<String, dynamic>;
 
-  // Fetch notifications and update the reactive list
-  Future<void> fetchNotifications() async {
-    isLoading.value = true; // Start loading
-    try {
-      final response = await http.get(Uri.parse(apiUrl));
-      // print('Response: ${response.body}'); // Debug API response
-      if (response.statusCode == 200) {
-        // Parse the response as a map
-        final decoded = json.decode(response.body) as Map<String, dynamic>;
+      // Extract the list from the "data" key
+      final results = decoded['data'] as List<dynamic>?;
 
-        // Extract the list from the "data" key
-        final results = decoded['data'] as List<dynamic>?;
+      if (results != null && results.isNotEmpty) {
+        // Map the list of notifications
+        final notifications = results.map((data) => NotificationModel.fromJson(data)).toList();
 
-        if (results == null || results.isEmpty) {
-          notifications.clear(); // Clear the list if no data
-          // print('No data available.');
-        } else {
-          notifications.value =
-              results.map((data) => NotificationModel.fromJson(data)).toList();
-          // print('Notifications: ${notifications.value}');
-        }
+        // Update the state with notifications
+        state = state.copyWith(notifications: notifications, isLoading: false);
       } else {
-        throw Exception(
-            'Failed to fetch data. Status code: ${response.statusCode}');
+        // No notifications available, clear the list
+        state = state.copyWith(notifications: [], isLoading: false);
       }
-    } catch (e) {
-      // print('Error: $e'); // Debug the error
-      throw Exception('Error fetching notifications: $e');
-    } finally {
-      isLoading.value = false; // Stop loading
+    } else {
+      throw Exception('Failed to fetch data. Status code: ${response.statusCode}');
     }
+  } catch (e) {
+    // print('Error: $e'); // Debugging
+    throw Exception('Error fetching notifications: $e');
+  } finally {
+    state = state.copyWith(isLoading: false); // Stop loading
   }
+}
+
+
+
 
   String getFormattedTimestamp(String timestamp) {
     try {
-      final dateTime =
-          DateTime.parse(timestamp); // Parse the ISO-8601 timestamp
-      return DateFormat('dd/MM/yyyy')
-          .format(dateTime); // Format as '11/12/2024'
+      final dateTime = DateTime.parse(timestamp);
+      return DateFormat('dd/MM/yyyy').format(dateTime);
     } catch (e) {
-      return timestamp; // Return original if parsing fails
+      return timestamp;
     }
   }
 
-  // Method to get the full image URL
-  String getFullImageUrl(String image) {
-    // const baseUrl = "https://raw.githubusercontent.com/shabeersha/test-api/main/";
-    return '$apiUrl$image'; // Combine base URL with the image file name
+  // String getFullImageUrl(String image) {
+  //   return '$apiUrl$image';
+  // }
+}
+
+// Notification state class
+class NotificationState {
+  final List<NotificationModel> notifications;
+  final bool isLoading;
+
+  NotificationState({
+    required this.notifications,
+    required this.isLoading,
+  });
+
+  // Initial state
+  factory NotificationState.initial() {
+    return NotificationState(notifications: [], isLoading: false);
+  }
+
+  // Copy method to update the state immutably
+  NotificationState copyWith({
+    List<NotificationModel>? notifications,
+    bool? isLoading,
+  }) {
+    return NotificationState(
+      notifications: notifications ?? this.notifications,
+      isLoading: isLoading ?? this.isLoading,
+    );
   }
 }
+
+// Provider for the ApiFunctions
+final notificationProvider =
+    StateNotifierProvider<ApiFunctions, NotificationState>(
+  (ref) => ApiFunctions(),
+);
