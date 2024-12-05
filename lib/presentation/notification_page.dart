@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:task_1/services/api_functions.dart';
 
+final notificationProvider = StateNotifierProvider<ApiFunctions, NotificationState>(
+  (ref) => ApiFunctions(),
+);
+
 class NotificationPage extends ConsumerWidget {
-  const NotificationPage({super.key});
+  final String data;
+  const NotificationPage({super.key, required this.data});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.read(notificationProvider.notifier);
     final state = ref.watch(notificationProvider);
-
-  
 
     return Scaffold(
       appBar: AppBar(
@@ -35,6 +38,29 @@ class NotificationPage extends ConsumerWidget {
                 color: Colors.green[400],
               ),
             );
+          } else if (state.errorMessage.isNotEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    state.errorMessage,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.red,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () {
+                      notifier.fetchNotifications();
+                    },
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            );
           } else if (state.notifications.isEmpty) {
             return const Center(
               child: Text('No notifications available.'),
@@ -57,7 +83,7 @@ class NotificationPage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(notification.body),
-                      const SizedBox(height: 10,),
+                      const SizedBox(height: 10),
                       Text(time),
                     ],
                   ),

@@ -1,7 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:task_1/presentation/notification_page.dart';
-import 'package:task_1/services/api_functions.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 Widget searchBar(BuildContext context, WidgetRef ref) {
@@ -30,20 +29,47 @@ Widget searchBar(BuildContext context, WidgetRef ref) {
           final notifier = ref.read(notificationProvider.notifier);
           // Fetch notifications directly
           notifier.fetchNotifications();
-          
+
           // Navigate to notification page
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => const NotificationPage(),
-          ));
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const NotificationPage(
+                data: 'This is data from the Home Page', // Pass data
+              ),
+            ),
+          );
         },
-        icon: const Icon(
-          Icons.notifications_none,
-          color: Colors.red,
-        ),
+        icon: Stack(children: [
+          const Icon(
+            size: 30,
+            Icons.notifications_none,
+            color: Colors.red,
+          ),
+          Positioned(
+              right: 0,
+              top: 0,
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: const BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                ),
+                child: const Text(
+                  '2',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )),
+        ]),
       ),
       IconButton(
         onPressed: () {},
         icon: const Icon(
+          size: 30,
           Icons.local_offer_outlined,
           color: Colors.orange,
         ),
@@ -51,7 +77,6 @@ Widget searchBar(BuildContext context, WidgetRef ref) {
     ],
   );
 }
-
 
 Widget topPicks(BuildContext context) {
   List<String> images = ['assets/images/fruitsplashimage.png'];
@@ -96,6 +121,7 @@ Widget buildImage(
     required String text,
     required bool button}) {
   return Container(
+    height: 300,
     width: double.infinity,
     margin: const EdgeInsets.all(1),
     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -128,7 +154,7 @@ Widget buildImage(
                           borderRadius: BorderRadius.circular(8),
                         ),
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
+                            horizontal: 10, vertical: 8),
                       ),
                       child: const Text(
                         'Check Now',
@@ -159,7 +185,7 @@ Widget buildImage(
             alignment: Alignment.bottomRight,
             child: Image.asset(
               image,
-              width: 150,
+              width: button ? 200 : 150,
               fit: BoxFit.cover,
             ))
       ],
@@ -365,7 +391,7 @@ Widget refer() {
         color: const Color(0xFF29D177),
         borderRadius: BorderRadius.circular(10)),
     width: double.infinity,
-    height: 150,
+    height: 100,
     child: Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -375,17 +401,22 @@ Widget refer() {
             child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'Refer & Earn',
-              style: TextStyle(
-                fontFamily: 'Quicksand', // Font family
-                color: Colors.white,
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-                height: 17.5 / 14,
+            Padding(
+              padding: EdgeInsets.only(left: 16.0),
+              child: Text(
+                'Refer & Earn',
+                style: TextStyle(
+                  fontFamily: 'Quicksand', // Font family
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 24,
+                  height: 17.5 / 14,
+                ),
               ),
             ),
-            SizedBox(height: 10,),
+            SizedBox(
+              height: 10,
+            ),
             Row(
               children: [
                 Text(
@@ -405,10 +436,31 @@ Widget refer() {
             )
           ],
         )),
-        Image.asset(
-          'assets/images/refer.png',
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/images/refer.png',
+          ),
         )
       ],
     ),
+  );
+}
+
+Widget button() {
+  return Center(
+    child: ElevatedButton(
+        onPressed: () {},
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.green,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 8),
+        ),
+        child: const Text(
+          'View all stores',
+          style: TextStyle(color: Colors.white),
+        )),
   );
 }

@@ -8,6 +8,7 @@ class HomePage extends ConsumerWidget{
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    
     List<Widget> widgetList = [
       searchBar(context, ref),
       const SizedBox(
@@ -31,12 +32,6 @@ class HomePage extends ConsumerWidget{
       ),
       const Text('Trending ', style: TextStyle(fontSize: 25)),
       trending(context),
-      const SizedBox(
-        height: 10,
-      ),
-      const SizedBox(
-        height: 10,
-      ),
       trending(context),
       const SizedBox(
         height: 10,
@@ -48,9 +43,15 @@ class HomePage extends ConsumerWidget{
       ),
       refer(),
        const SizedBox(
-        height: 40,
+        height: 30,
       ),
-      const Text('Nearby stores ', style: TextStyle(fontSize: 25)),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text('Nearby stores ', style: TextStyle(fontSize: 25)),
+          TextButton(onPressed: (){}, child: const Text('See all',style: TextStyle(color: Colors.green,fontSize: 20),))
+        ],
+      ),
       const SizedBox(
         height: 20,
       ),
@@ -63,6 +64,9 @@ class HomePage extends ConsumerWidget{
       ),
       nearby(),
       divider(),
+      const SizedBox(height: 50,),
+      button()
+      
     ];
     return Scaffold(
       appBar: AppBar(
@@ -71,6 +75,10 @@ class HomePage extends ConsumerWidget{
           color: Colors.green,
         ),
         title: const Text('ABCD, New Delhi'),
+        actions: const [Padding(
+          padding: EdgeInsets.only(right: 110),
+          child: Icon(Icons.keyboard_arrow_down_rounded,color: Colors.green,),
+        )],
       ),
       body: SingleChildScrollView(
         child: Padding(
