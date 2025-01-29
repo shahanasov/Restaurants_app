@@ -75,8 +75,9 @@ class NotificationPage extends ConsumerWidget {
                 final time =
                     notifier.getFormattedTimestamp(notification.timeStamp);
                 return ListTile(
-                  leading: const CircleAvatar(
+                  leading:  CircleAvatar(
                     backgroundColor: Colors.white,
+                    child: Image.asset("assets/images/${notification.image}"),
                   ),
                   title: Text(notification.title),
                   subtitle: Column(

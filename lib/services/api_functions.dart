@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:isolate';
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:task_1/services/model.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
 
 class ApiFunctions extends StateNotifier<NotificationState> {
   ApiFunctions() : super(NotificationState.initial());
@@ -87,18 +89,48 @@ Future<void> fetchNotifications() async {
 
 
 
-  String getFormattedTimestamp(String timestamp) {
-    try {
-      final dateTime = DateTime.parse(timestamp);
-      return DateFormat('dd/MM/yyyy').format(dateTime);
-    } catch (e) {
-      return timestamp;
-    }
-  }
 
-  // String getFullImageUrl(String image) {
-  //   return '$apiUrl$image';
-  // }
+String getFormattedTimestamp(String timestamp) {
+  try {
+    final dateTime = DateTime.parse(timestamp);
+    return timeago.format(dateTime, locale: 'en');
+  } catch (e) {
+    return timestamp;
+  }
+}
+
+
+ // Helper function to parse notifications in an isolate
+// Function to parse JSON in an isolate
+Future<List<NotificationModel>> parseJsonInIsolate(String responseBody) async {
+  final receivePort = ReceivePort();
+
+  await Isolate.spawn(_isolateParseJson, [receivePort.sendPort, responseBody]);
+
+  // Wait for the parsed data from the isolate
+  return await receivePort.first as List<NotificationModel>;
+}
+
+// Entry point for the isolate
+void _isolateParseJson(List<dynamic> args) {
+  final sendPort = args[0] as SendPort;
+  final responseBody = args[1] as String;
+
+  try {
+    // Parse the JSON
+    final decoded = json.decode(responseBody) as Map<String, dynamic>;
+    final results = decoded['data'] as List<dynamic>?;
+
+    // Map results to NotificationModel
+    final notifications = results?.map((data) => NotificationModel.fromJson(data)).toList() ?? [];
+
+    // Send the result back to the main isolate
+    sendPort.send(notifications);
+  } catch (e) {
+    // Send an empty list in case of error
+    sendPort.send([]);
+  }
+}
 }
 
 // Notification state class
@@ -135,4 +167,8 @@ class NotificationState {
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
+
+  
 }
+
+

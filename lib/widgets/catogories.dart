@@ -78,7 +78,7 @@ Widget categoryCard(
     children: [
       Stack(
         children: [
-          Card(
+          Card(color: const Color(0xFFFFFFFF),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),

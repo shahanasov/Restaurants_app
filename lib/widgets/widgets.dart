@@ -48,7 +48,7 @@ Widget searchBar(BuildContext context, WidgetRef ref) {
           ),
           Positioned(
               right: 0,
-              top: 0,
+              top: -3,
               child: Container(
                 padding: const EdgeInsets.all(4),
                 decoration: const BoxDecoration(
